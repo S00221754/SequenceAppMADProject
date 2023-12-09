@@ -29,7 +29,7 @@ public class TiltDirection implements SensorEventListener {
             @Override
             public void run() {
                 checkTiltDirection();
-                handler.postDelayed(this, 1000); // Check every 1 second
+                handler.postDelayed(this, 500); // Check every 1 second
             }
         }, 1000); // Start checking after 1 second
     }

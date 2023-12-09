@@ -22,29 +22,7 @@
 
         </shape>
     </item>
-    <item>
-        <rotate android:fromDegrees="45" android:toDegrees="45"
-            android:pivotX="10%" android:pivotY="-45%" >
-            <shape android:shape="rectangle" >
-                <solid android:color="#ffffff" />
-                <stroke
-                    android:width="5dp"
-                    android:color="@color/black" />
-            </shape>
-        </rotate>
-    </item>
-    <item android:left="-306dp">
-        <rotate android:fromDegrees="90">
-            <shape android:shape="line">
-                <solid android:color="#ffffff" />
-                <stroke
-                    android:width="5dp"
-                    android:color="@color/black" />
-            </shape>
-        </rotate>
-        <size
-            android:width="50dp"
-            android:height="5dp" />
-    </item>
+
+
 
 </layer-list>

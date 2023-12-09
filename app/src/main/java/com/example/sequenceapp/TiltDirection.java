@@ -8,13 +8,19 @@ import android.hardware.SensorManager;
 import android.os.Handler;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TiltDirection implements SensorEventListener {
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private float[] acceleration = new float[3];
+    private List<String> tiltSequence = new ArrayList<>(); //this is used to store the direction the user tilted their phone in
     private Handler handler = new Handler();
     private Context context;
+
+    private int tileCount = 0;
 
     public TiltDirection(Context context) {
         this.context = context;
@@ -29,22 +35,31 @@ public class TiltDirection implements SensorEventListener {
             @Override
             public void run() {
                 checkTiltDirection();
-                handler.postDelayed(this, 500); // Check every 1 second
+                handler.postDelayed(this, 500);
             }
-        }, 1000); // Start checking after 1 second
+        }, 1000);
     }
 
     private void checkTiltDirection() {
         if (acceleration[2] < 6) {
-            showToast("Tilt Backwards Detected");
+            processTilt("yellow");
         } else if (acceleration[0] < 2) {
-            showToast("Tilt Forward Detected");
+            processTilt("red");
         } else if (acceleration[1] < -1) {
-            showToast("Tilt Left Detected");
+            processTilt("blue");
         } else if (acceleration[1] > 1) {
-            showToast("Tilt Right Detected");
+            processTilt("green");
         }
     }
+    private void processTilt(String tiltDirection) {
+        showToast(tiltDirection);
+        tiltSequence.add(tiltDirection);
+
+        if (tiltSequence.size() == 4) {
+            ((GameActivity) context).fourTiltsDetected();
+        }
+    }
+
 
     private void showToast(String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
@@ -60,6 +75,16 @@ public class TiltDirection implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Handle accuracy changes if needed
+    }
+
+
+    //gets the tilt sequence
+    public List<String> getTiltSequence(){
+        return tiltSequence;
+    }
+    //once called clears the tilt sequence
+    public void clearTileSequence(){
+        tiltSequence.clear();
     }
 }
 

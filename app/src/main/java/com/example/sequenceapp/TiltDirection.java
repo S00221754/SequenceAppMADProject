@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -16,7 +17,8 @@ public class TiltDirection implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private float[] acceleration = new float[3];
-    private List<String> tiltSequence = new ArrayList<>(); //this is used to store the direction the user tilted their phone in
+    private boolean isTiltDetected = false;
+    private String tilt;
     private Handler handler = new Handler();
     private Context context;
 
@@ -35,35 +37,28 @@ public class TiltDirection implements SensorEventListener {
             @Override
             public void run() {
                 checkTiltDirection();
-                handler.postDelayed(this, 500);
+                handler.postDelayed(this, 1000);
             }
         }, 1000);
     }
 
     private void checkTiltDirection() {
         if (acceleration[2] < 6) {
-            processTilt("yellow");
+            tilt = "yellow";
+
         } else if (acceleration[0] < 2) {
-            processTilt("red");
+            tilt = "red";
         } else if (acceleration[1] < -1) {
-            processTilt("blue");
+            tilt = "blue";
         } else if (acceleration[1] > 1) {
-            processTilt("green");
+            tilt = "green";
         }
-    }
-    private void processTilt(String tiltDirection) {
-        showToast(tiltDirection);
-        tiltSequence.add(tiltDirection);
 
-        if (tiltSequence.size() == 4) {
-            ((GameActivity) context).fourTiltsDetected();
+        if (tilt != null){
+            isTiltDetected = true;
         }
     }
 
-
-    private void showToast(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -79,12 +74,18 @@ public class TiltDirection implements SensorEventListener {
 
 
     //gets the tilt sequence
-    public List<String> getTiltSequence(){
-        return tiltSequence;
+    public String getTilt(){
+        return tilt;
     }
     //once called clears the tilt sequence
     public void clearTileSequence(){
-        tiltSequence.clear();
+        tilt.isEmpty();
+    }
+    public boolean isTiltDetected(){
+        return isTiltDetected;
+    }
+    public void resetTilt(){
+        isTiltDetected = false;
     }
 }
 

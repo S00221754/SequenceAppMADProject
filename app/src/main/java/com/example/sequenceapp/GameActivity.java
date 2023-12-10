@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,8 +45,8 @@ public class GameActivity extends AppCompatActivity {
         yellow = findViewById(R.id.yellowTile);
         sequenceList = findViewById(R.id.sequence);
         sequence = new RandomSequence();
-        currentSequence = sequence.GenerateSequence(4);
-
+        //currentSequence = sequence.GenerateSequence(4);
+        currentSequence = new String[]{"blue", "red"};
         //for testing.
         StringBuilder build = new StringBuilder();
         for(String item : currentSequence){
@@ -66,13 +67,15 @@ public class GameActivity extends AppCompatActivity {
                 if (sequenceIndex < currentSequence.length) {
                     flashTile(currentSequence[sequenceIndex]);
                     sequenceIndex++;
-                    handler.postDelayed(this, 1000); //
+                    handler.postDelayed(this, 1000);
                 } else {
-                    inProgress = true;
+                    Log.d("waiting", "waiting for movement");
+                    checkAndProceed();
                 }
             }
         }, 1000);
     }
+
 
     // flashes the tile according to the color
     private void flashTile(String color) {
@@ -133,25 +136,37 @@ public class GameActivity extends AppCompatActivity {
                 return 0;
         }
     }
-
-    //currently checks the whole sequence of the user, TODO: the moment a user makes the wrong move its game over
-    private void checkSequence(){
-        List<String> tiltSequence = tiltDirection.getTiltSequence();
-        if(inProgress && tiltSequence.size() == currentSequence.length){
-
-            if(tiltSequence.equals(Arrays.asList(currentSequence))){
-                sequenceList.setText("Correct");
-            }else {
-                sequenceList.setText("Wrong");
-            }
-            tiltDirection.clearTileSequence();
+    private void checkAndProceed() {
+        if (tiltDirection.isTiltDetected()) {
+            CheckUserSequence();
+            tiltDirection.resetTilt();
+        } else {
+            // If no tilt is detected, you can add additional logic or just wait for the next iteration.
+            Log.d("waiting", "waiting for movement");
+            handler.postDelayed(this::checkAndProceed, 100);
         }
     }
-    //check when four tilts are detected TODO: this method may be removed or altered to satisfy the moment a user makes the wrong move
-    public void fourTiltsDetected() {
-        // Now you can call checkSequence when four tilts are detected
-        checkSequence();
+
+    //currently checks the whole sequence of the user, TODO: the moment a user makes the wrong move its game over
+    private void CheckUserSequence() {
+        String currentTilt = tiltDirection.getTilt();
+
+        if (currentSequence.length > 0 && currentTilt.equals(currentSequence[0])) {
+            currentSequence = Arrays.copyOfRange(currentSequence, 1, currentSequence.length);
+            StringBuilder build = new StringBuilder();
+            for(String item : currentSequence){
+                build.append(item).append("\n");
+            }
+            sequenceList.setText(build.toString());
+        } else {
+            sequenceList.setText("You lose");
+        }
+        if (currentSequence.length == 0){
+            sequenceList.setText("You win");
+
+        }
     }
+
 
 
     //the following methods below are for the tilt direction

@@ -45,8 +45,8 @@ public class GameActivity extends AppCompatActivity {
         yellow = findViewById(R.id.yellowTile);
         sequenceList = findViewById(R.id.sequence);
         sequence = new RandomSequence();
-        //currentSequence = sequence.GenerateSequence(4);
-        currentSequence = new String[]{"blue", "red"};
+        currentSequence = sequence.GenerateSequence(4);
+        //currentSequence = new String[]{"blue", "red", "yellow", "green"};
         //for testing.
         StringBuilder build = new StringBuilder();
         for(String item : currentSequence){
@@ -68,10 +68,8 @@ public class GameActivity extends AppCompatActivity {
                     flashTile(currentSequence[sequenceIndex]);
                     sequenceIndex++;
                     handler.postDelayed(this, 1000);
-                } else {
-                    Log.d("waiting", "waiting for movement");
-                    checkAndProceed();
                 }
+                checkAndProceed();
             }
         }, 1000);
     }
@@ -142,29 +140,33 @@ public class GameActivity extends AppCompatActivity {
             tiltDirection.resetTilt();
         } else {
             // If no tilt is detected, you can add additional logic or just wait for the next iteration.
-            Log.d("waiting", "waiting for movement");
             handler.postDelayed(this::checkAndProceed, 100);
         }
     }
 
-    //currently checks the whole sequence of the user, TODO: the moment a user makes the wrong move its game over
+    //Checks each tilt aligns with the sequence if not it is game over
     private void CheckUserSequence() {
         String currentTilt = tiltDirection.getTilt();
 
-        if (currentSequence.length > 0 && currentTilt.equals(currentSequence[0])) {
-            currentSequence = Arrays.copyOfRange(currentSequence, 1, currentSequence.length);
-            StringBuilder build = new StringBuilder();
-            for(String item : currentSequence){
-                build.append(item).append("\n");
+        if (currentSequence != null){
+            if (currentSequence.length > 0 && currentTilt.equals(currentSequence[0])) {
+                //this removes the first color of the array and moves the next color into 0
+                currentSequence = Arrays.copyOfRange(currentSequence, 1, currentSequence.length);
+                StringBuilder build = new StringBuilder();
+                for(String item : currentSequence){
+                    build.append(item).append("\n");
+                }
+                sequenceList.setText(build.toString());
+                tiltDirection.clearTilt();
+            } else {
+                sequenceList.setText("You lose");
             }
-            sequenceList.setText(build.toString());
-        } else {
-            sequenceList.setText("You lose");
-        }
-        if (currentSequence.length == 0){
-            sequenceList.setText("You win");
+            if (currentSequence.length == 0){
+                sequenceList.setText("You win");
 
+            }
         }
+
     }
 
 

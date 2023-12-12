@@ -7,10 +7,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TiltDirection implements SensorEventListener {
 
@@ -45,13 +41,17 @@ public class TiltDirection implements SensorEventListener {
     private void checkTiltDirection() {
         if (acceleration[2] < 6) {
             tilt = "yellow";
+            Log.d("Tilt detected", "yellow");
 
-        } else if (acceleration[0] < 2) {
+        } else if (acceleration[0] < 1 && acceleration[1] <1) {
             tilt = "red";
+            Log.d("Tilt detected", "red");
         } else if (acceleration[1] < -1) {
             tilt = "blue";
+            Log.d("Tilt detected", "blue");
         } else if (acceleration[1] > 1) {
             tilt = "green";
+            Log.d("Tilt detected", "green");
         }
 
         if (tilt != null){
@@ -78,8 +78,8 @@ public class TiltDirection implements SensorEventListener {
         return tilt;
     }
     //once called clears the tilt sequence
-    public void clearTileSequence(){
-        tilt.isEmpty();
+    public void clearTilt(){
+        tilt = null;
     }
     public boolean isTiltDetected(){
         return isTiltDetected;

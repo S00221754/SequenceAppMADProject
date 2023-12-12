@@ -16,11 +16,10 @@ import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
 
-    /*TODO: 1. Allow the program to check each tilt input and compare to the sequence index it is aligned to
-            2. Implement a way to display the game over screen.
-            3. Allow users to restart the game when its game over
-            4. Add the score at the after each successful round
-            5. Implement database function (will add tasks to this after functionality is done)*/
+    /*TODO:
+            1. Implement a way to display the game over screen.
+            2. Allow users to restart the game when its game over
+            3. Implement database function (will add tasks to this after functionality is done)*/
 
     TiltDirection tiltDirection;
     RandomSequence sequence;
@@ -43,6 +42,7 @@ public class GameActivity extends AppCompatActivity {
         yellow = findViewById(R.id.yellowTile);
         sequenceList = findViewById(R.id.sequence);
         score = findViewById(R.id.Score);
+        //initial sequence
         sequence = new RandomSequence();
         currentSequence = sequence.GenerateSequence(sequenceNumber);
         //currentSequence = new String[]{"blue", "red", "yellow", "green"};
@@ -63,11 +63,13 @@ public class GameActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                //flashes the drawables in the order of the sequence colours
                 if (sequenceIndex < currentSequence.length) {
                     flashTile(currentSequence[sequenceIndex]);
                     sequenceIndex++;
                     handler.postDelayed(this, 1000);
                 }
+                //begins to check tilts and sequence
                 checkAndProceed();
             }
         }, 1000);
@@ -133,12 +135,13 @@ public class GameActivity extends AppCompatActivity {
                 return 0;
         }
     }
+    //this checks if a tilt is detected before checking the sequence.
     private void checkAndProceed() {
         if (tiltDirection.isTiltDetected()) {
             CheckUserSequence();
             tiltDirection.resetTilt();
         } else {
-            // If no tilt is detected, you can add additional logic or just wait for the next iteration.
+            // if no tilt is detected, it will continue to keep checking
             handler.postDelayed(this::checkAndProceed, 100);
         }
     }
@@ -161,7 +164,7 @@ public class GameActivity extends AppCompatActivity {
             } else {
                 sequenceList.setText("You lose");
             }
-            //when a user finishes a sequence it will reset the sequence with a new sequence with 2 additional colours
+            //when a user finishes a sequence it will reset the sequence with a new sequence with 2 additional colours / TODO: might make this into a method in the future
             if (currentSequence.length == 0){
                 //adds the score
                 totalScore += sequenceNumber;

@@ -3,6 +3,7 @@ package com.example.sequenceapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,7 +29,8 @@ public class GameActivity extends AppCompatActivity {
     int sequenceIndex = 0, sequenceNumber = 4, totalScore = 0, AddScore=0;
     Handler handler = new Handler();
     TextView sequenceList, score;
-    boolean newGame = false;
+    boolean newGame = false, gameOver = false;
+
 
 
     @Override
@@ -142,49 +144,56 @@ public class GameActivity extends AppCompatActivity {
             tiltDirection.resetTilt();
         } else {
             // if no tilt is detected, it will continue to keep checking
-            handler.postDelayed(this::checkAndProceed, 100);
+            handler.postDelayed(this::checkAndProceed, 1000);
         }
     }
 
     //Checks each tilt aligns with the sequence if not it is game over
     private void CheckUserSequence() {
-        String currentTilt = tiltDirection.getTilt();
+        if (!gameOver) {
+            String currentTilt = tiltDirection.getTilt();
 
-        if (currentSequence != null){
-            if (currentSequence.length > 0 && currentTilt.equals(currentSequence[0])) {
-                //this removes the first color of the array and moves the next color into 0
-                currentSequence = Arrays.copyOfRange(currentSequence, 1, currentSequence.length);
-                //testing
-                StringBuilder build = new StringBuilder();
-                for(String item : currentSequence){
-                    build.append(item).append("\n");
-                }
-                sequenceList.setText(build.toString());
-                tiltDirection.clearTilt();
-            } else {
-                sequenceList.setText("You lose");
-            }
-            //when a user finishes a sequence it will reset the sequence with a new sequence with 2 additional colours / TODO: might make this into a method in the future
-            if (currentSequence.length == 0){
-                //adds the score
-                totalScore += sequenceNumber;
-                score.setText(String.valueOf(totalScore));
-                sequenceNumber += 2;
-                Log.d("new sequence", String.valueOf(sequenceNumber));
-                currentSequence = sequence.GenerateSequence(sequenceNumber);
-                //testing
-                StringBuilder build = new StringBuilder();
-                for(String item : currentSequence){
-                    build.append(item).append("\n");
-                }
-                sequenceList.setText(build.toString());
-                tiltDirection.clearTilt();
-                sequenceIndex = 0;
-                flashSequence();
+            if (currentSequence != null) {
+                if (currentSequence.length > 0 && currentTilt.equals(currentSequence[0])) {
+                    // This removes the first color of the array and moves the next color into 0
+                    currentSequence = Arrays.copyOfRange(currentSequence, 1, currentSequence.length);
+                    // Testing
+                    StringBuilder build = new StringBuilder();
+                    for (String item : currentSequence) {
+                        build.append(item).append("\n");
+                    }
+                    sequenceList.setText(build.toString());
+                    tiltDirection.clearTilt();
+                } else {
 
+                    setGameOver(); // Set the gameIsOver flag
+                    Intent gameOver = new Intent(getApplicationContext(), GameOverActivity.class);
+                    startActivity(gameOver);
+                }
+
+                // When a user finishes a sequence, it will reset the sequence with a new sequence with 2 additional colors / TODO: might make this into a method in the future
+                if (currentSequence.length == 0) {
+                    // Adds the score
+                    totalScore += sequenceNumber;
+                    score.setText(String.valueOf(totalScore));
+                    sequenceNumber += 2;
+                    Log.d("new sequence", String.valueOf(sequenceNumber));
+                    currentSequence = sequence.GenerateSequence(sequenceNumber);
+                    // Testing
+                    StringBuilder build = new StringBuilder();
+                    for (String item : currentSequence) {
+                        build.append(item).append("\n");
+                    }
+                    sequenceList.setText(build.toString());
+                    tiltDirection.clearTilt();
+                    sequenceIndex = 0;
+                    flashSequence();
+                }
             }
         }
-
+    }
+    private void setGameOver() {
+        gameOver = true;
     }
 
 

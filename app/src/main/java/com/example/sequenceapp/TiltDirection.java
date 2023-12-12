@@ -18,7 +18,6 @@ public class TiltDirection implements SensorEventListener {
     private Handler handler = new Handler();
     private Context context;
 
-    private int tileCount = 0;
 
     public TiltDirection(Context context) {
         this.context = context;
@@ -39,11 +38,11 @@ public class TiltDirection implements SensorEventListener {
     }
 
     private void checkTiltDirection() {
-        if (acceleration[2] < 6) {
+        if (acceleration[2] < 7) {
             tilt = "yellow";
             Log.d("Tilt detected", "yellow");
 
-        } else if (acceleration[0] < 1 && acceleration[1] <1) {
+        } else if (acceleration[0] < -3 && acceleration[1] <1) {
             tilt = "red";
             Log.d("Tilt detected", "red");
         } else if (acceleration[1] < -1) {

@@ -26,9 +26,9 @@ public class GameActivity extends AppCompatActivity {
     RandomSequence sequence;
     ImageView red,blue,green,yellow;
     String[] currentSequence;
-    int sequenceIndex = 0, sequenceNumber = 4;
+    int sequenceIndex = 0, sequenceNumber = 4, totalScore = 0, AddScore=0;
     Handler handler = new Handler();
-    TextView sequenceList;
+    TextView sequenceList, score;
     boolean newGame = false;
 
 
@@ -42,6 +42,7 @@ public class GameActivity extends AppCompatActivity {
         green = findViewById(R.id.greenTile);
         yellow = findViewById(R.id.yellowTile);
         sequenceList = findViewById(R.id.sequence);
+        score = findViewById(R.id.Score);
         sequence = new RandomSequence();
         currentSequence = sequence.GenerateSequence(sequenceNumber);
         //currentSequence = new String[]{"blue", "red", "yellow", "green"};
@@ -150,6 +151,7 @@ public class GameActivity extends AppCompatActivity {
             if (currentSequence.length > 0 && currentTilt.equals(currentSequence[0])) {
                 //this removes the first color of the array and moves the next color into 0
                 currentSequence = Arrays.copyOfRange(currentSequence, 1, currentSequence.length);
+                //testing
                 StringBuilder build = new StringBuilder();
                 for(String item : currentSequence){
                     build.append(item).append("\n");
@@ -159,10 +161,15 @@ public class GameActivity extends AppCompatActivity {
             } else {
                 sequenceList.setText("You lose");
             }
+            //when a user finishes a sequence it will reset the sequence with a new sequence with 2 additional colours
             if (currentSequence.length == 0){
+                //adds the score
+                totalScore += sequenceNumber;
+                score.setText(String.valueOf(totalScore));
                 sequenceNumber += 2;
                 Log.d("new sequence", String.valueOf(sequenceNumber));
                 currentSequence = sequence.GenerateSequence(sequenceNumber);
+                //testing
                 StringBuilder build = new StringBuilder();
                 for(String item : currentSequence){
                     build.append(item).append("\n");

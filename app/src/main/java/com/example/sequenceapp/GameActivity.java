@@ -168,6 +168,7 @@ public class GameActivity extends AppCompatActivity {
 
                     setGameOver(); // Set the gameIsOver flag
                     Intent gameOver = new Intent(getApplicationContext(), GameOverActivity.class);
+                    gameOver.putExtra("Score", totalScore);
                     startActivity(gameOver);
                 }
 

@@ -23,12 +23,24 @@
         android:id="@+id/btnPlayGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="PlayAgain"
         android:text="Play Game"
         android:textSize="20sp"
-        android:onClick="PlayAgain"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.852"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.6" />
+        app:layout_constraintVertical_bias="0.498" />
+
+    <ListView
+        android:id="@+id/lvTopScores"
+        android:layout_width="317dp"
+        android:layout_height="339dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.125"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.777" />
 </androidx.constraintlayout.widget.ConstraintLayout>

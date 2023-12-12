@@ -35,5 +35,10 @@ public class Score {
     public void setFinalScore(String _final_score){
         this._final_score = _final_score;
     }
+
+    @Override
+    public String toString(){
+        return "Name: " + getName() + " Score: " + getFinalScore();
+    }
 }
 

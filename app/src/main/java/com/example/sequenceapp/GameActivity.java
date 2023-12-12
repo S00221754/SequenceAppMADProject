@@ -26,12 +26,10 @@ public class GameActivity extends AppCompatActivity {
     RandomSequence sequence;
     ImageView red,blue,green,yellow;
     String[] currentSequence;
-    int sequenceIndex = 0;
+    int sequenceIndex = 0, sequenceNumber = 4;
     Handler handler = new Handler();
     TextView sequenceList;
-    boolean inProgress = false, // checks if its the users turn
-            gameOver = false;
-
+    boolean newGame = false;
 
 
     @Override
@@ -45,7 +43,7 @@ public class GameActivity extends AppCompatActivity {
         yellow = findViewById(R.id.yellowTile);
         sequenceList = findViewById(R.id.sequence);
         sequence = new RandomSequence();
-        currentSequence = sequence.GenerateSequence(4);
+        currentSequence = sequence.GenerateSequence(sequenceNumber);
         //currentSequence = new String[]{"blue", "red", "yellow", "green"};
         //for testing.
         StringBuilder build = new StringBuilder();
@@ -162,7 +160,17 @@ public class GameActivity extends AppCompatActivity {
                 sequenceList.setText("You lose");
             }
             if (currentSequence.length == 0){
-                sequenceList.setText("You win");
+                sequenceNumber += 2;
+                Log.d("new sequence", String.valueOf(sequenceNumber));
+                currentSequence = sequence.GenerateSequence(sequenceNumber);
+                StringBuilder build = new StringBuilder();
+                for(String item : currentSequence){
+                    build.append(item).append("\n");
+                }
+                sequenceList.setText(build.toString());
+                tiltDirection.clearTilt();
+                sequenceIndex = 0;
+                flashSequence();
 
             }
         }

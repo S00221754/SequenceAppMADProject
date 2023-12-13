@@ -94,7 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Select top scores query
         String selectTopScoresQuery = "SELECT * FROM " + TABLE_SCORES +
-                " ORDER BY " + KEY_SCORES + " DESC LIMIT " + 5;
+                " ORDER BY CAST (" + KEY_SCORES + " AS INTEGER) DESC LIMIT " + 5;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectTopScoresQuery, null);

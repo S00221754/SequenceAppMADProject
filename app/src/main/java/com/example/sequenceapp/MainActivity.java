@@ -10,7 +10,6 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
 
     Button btnPlay;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,5 +23,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(startGame);
             }
         });
+    }
+    public void viewScores(View v){
+        Intent viewScores = new Intent(getApplicationContext(), HighScore.class);
+        startActivity(viewScores);
     }
 }

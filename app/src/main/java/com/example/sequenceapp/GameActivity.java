@@ -24,7 +24,7 @@ public class GameActivity extends AppCompatActivity {
     String[] currentSequence;
     int sequenceIndex = 0, sequenceNumber = 4, totalScore = 0;
     Handler handler = new Handler();
-    TextView sequenceList, score;
+    TextView score;
     boolean gameOver = false;
 
 
@@ -38,7 +38,6 @@ public class GameActivity extends AppCompatActivity {
         blue = findViewById(R.id.blueTile);
         green = findViewById(R.id.greenTile);
         yellow = findViewById(R.id.yellowTile);
-        sequenceList = findViewById(R.id.sequence);
         score = findViewById(R.id.Score);
         //initial sequence
         sequence = new RandomSequence();

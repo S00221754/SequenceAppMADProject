@@ -20,12 +20,14 @@ public class InputScore extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_score);
         db = new DatabaseHelper(this);
+        //gets the final score from the activity
         Bundle score = getIntent().getExtras();
         finalScore = score.getInt("Score");
         btnAdd = findViewById(R.id.btnAdd);
         userName = findViewById(R.id.evUserName);
 
     }
+    //Once user clicks add the score and name will be added to the databse.
     public void AddScore(View v){
         if (userName.getText() != null){
             db.addScore(new Score(String.valueOf(userName.getText()),String.valueOf(finalScore)));

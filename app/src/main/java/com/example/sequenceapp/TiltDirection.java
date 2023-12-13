@@ -10,6 +10,7 @@ import android.util.Log;
 
 public class TiltDirection implements SensorEventListener {
 
+    //variables
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private float[] acceleration = new float[3];
@@ -19,6 +20,7 @@ public class TiltDirection implements SensorEventListener {
     private Context context;
 
 
+    //gets the sensor
     public TiltDirection(Context context) {
         this.context = context;
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -26,7 +28,7 @@ public class TiltDirection implements SensorEventListener {
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         startTiltCheck();
     }
-
+    //begins checking for tilt directions
     private void startTiltCheck() {
         handler.postDelayed(new Runnable() {
             @Override
@@ -36,7 +38,7 @@ public class TiltDirection implements SensorEventListener {
             }
         }, 1000);
     }
-
+    //Checks the xyz cords and compares them to which direction the phone tilted in
     private void checkTiltDirection() {
         if (acceleration[2] < 7) {
             tilt = "yellow";
@@ -58,7 +60,7 @@ public class TiltDirection implements SensorEventListener {
         }
     }
 
-
+    //gets the xyz of the phone due to the accelerometer
     @Override
     public void onSensorChanged(SensorEvent event) {
         acceleration[0] = event.values[0]; // x
@@ -80,9 +82,11 @@ public class TiltDirection implements SensorEventListener {
     public void clearTilt(){
         tilt = null;
     }
+    //notifies when a tilt has been made
     public boolean isTiltDetected(){
         return isTiltDetected;
     }
+    //resets the tilt
     public void resetTilt(){
         isTiltDetected = false;
     }

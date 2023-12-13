@@ -36,6 +36,7 @@ public class Score {
         this._final_score = _final_score;
     }
 
+    //to string to display on the list
     @Override
     public String toString(){
         return "Name: " + getName() + " Score: " + getFinalScore();

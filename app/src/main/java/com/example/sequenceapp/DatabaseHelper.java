@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-
+//source moodle page part 2 crud operations
 public class DatabaseHelper extends SQLiteOpenHelper {
     private  static  int DATABSE_VERSION = 1;
     private static final String DATABASE_NAME = "GameScores";

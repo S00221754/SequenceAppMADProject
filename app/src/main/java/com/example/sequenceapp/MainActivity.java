@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btnPlay = findViewById(R.id.btnPlay);
-
+        //starts the game
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    //allows user to view the top 5 scores
     public void viewScores(View v){
         Intent viewScores = new Intent(getApplicationContext(), HighScore.class);
         startActivity(viewScores);

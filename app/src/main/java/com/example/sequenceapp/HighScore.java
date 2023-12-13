@@ -22,7 +22,7 @@ public class HighScore extends AppCompatActivity {
         setContentView(R.layout.activity_high_score);
         DatabaseHelper db = new DatabaseHelper(this);
         btnPlayGame = findViewById(R.id.btnPlayGame);
-
+        //displays the top scores in a list
         ListView topScores = findViewById(R.id.lvTopScores);
         List<Score> topScorers = db.getTopScores();
 

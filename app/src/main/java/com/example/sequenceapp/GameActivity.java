@@ -17,19 +17,15 @@ import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
 
-    /*TODO:
-            1. Implement a way to display the game over screen.
-            2. Allow users to restart the game when its game over
-            3. Implement database function (will add tasks to this after functionality is done)*/
-
+    //variables
     TiltDirection tiltDirection;
     RandomSequence sequence;
     ImageView red,blue,green,yellow;
     String[] currentSequence;
-    int sequenceIndex = 0, sequenceNumber = 4, totalScore = 0, AddScore=0;
+    int sequenceIndex = 0, sequenceNumber = 4, totalScore = 0;
     Handler handler = new Handler();
     TextView sequenceList, score;
-    boolean newGame = false, gameOver = false;
+    boolean gameOver = false;
 
 
 
@@ -47,20 +43,14 @@ public class GameActivity extends AppCompatActivity {
         //initial sequence
         sequence = new RandomSequence();
         currentSequence = sequence.GenerateSequence(sequenceNumber);
-        //currentSequence = new String[]{"blue", "red", "yellow", "green"};
-        //for testing.
-        StringBuilder build = new StringBuilder();
-        for(String item : currentSequence){
-            build.append(item).append("\n");
-        }
-        sequenceList.setText(build.toString());
+
         //start tracking the accelerometer (need to switch this so it will only track once the sequence showing is over
         tiltDirection = new TiltDirection(this);
         // Start flashing the sequence
         flashSequence();
     }
 
-    // Flash the current sequence
+    // Flash the tiles according to the current sequence
     private void flashSequence() {
         handler.postDelayed(new Runnable() {
             @Override
@@ -72,13 +62,13 @@ public class GameActivity extends AppCompatActivity {
                     handler.postDelayed(this, 1000);
                 }
                 //begins to check tilts and sequence
-                checkAndProceed();
+                CheckTilt();
             }
         }, 1000);
     }
 
 
-    // flashes the tile according to the color
+    // flashes the tile according to the sequence colours
     private void flashTile(String color) {
 
         int originalColor = getOriginalColor(color);
@@ -138,14 +128,54 @@ public class GameActivity extends AppCompatActivity {
         }
     }
     //this checks if a tilt is detected before checking the sequence.
-    private void checkAndProceed() {
+    private void CheckTilt() {
         if (tiltDirection.isTiltDetected()) {
+            FlashUserTile(tiltDirection.getTilt());
             CheckUserSequence();
             tiltDirection.resetTilt();
         } else {
             // if no tilt is detected, it will continue to keep checking
-            handler.postDelayed(this::checkAndProceed, 1000);
+            handler.postDelayed(this::CheckTilt, 1000);
         }
+    }
+    //flashes where the user tilts towards
+    private void FlashUserTile(String color) {
+        int originalColor = getOriginalColor(color);
+
+        // Check if tiltDirection is not null and tilt is not null
+        if (tiltDirection != null && tiltDirection.getTilt() != null) {
+            String tilt = tiltDirection.getTilt();
+            Log.d("FlashTile", "Tilt direction: " + tilt);
+
+            // Flash the tile based on the tilt direction
+            switch (tilt) {
+                case "red":
+                    flashTileWithDirection(red, originalColor);
+                    break;
+                case "blue":
+                    flashTileWithDirection(blue, originalColor);
+                    break;
+                case "green":
+                    flashTileWithDirection(green, originalColor);
+                    break;
+                case "yellow":
+                    flashTileWithDirection(yellow, originalColor);
+                    break;
+            }
+        }
+
+        //resets the color after flashing
+        final int finalOriginalColor = originalColor;
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                resetTileColor(color, finalOriginalColor);
+            }
+        }, 500);
+    }
+    //used to flash the tile that the user tilts too
+    private void flashTileWithDirection(ImageView tile, int originalColor) {
+        tile.getDrawable().setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
     }
 
     //Checks each tilt aligns with the sequence if not it is game over
@@ -157,22 +187,16 @@ public class GameActivity extends AppCompatActivity {
                 if (currentSequence.length > 0 && currentTilt.equals(currentSequence[0])) {
                     // This removes the first color of the array and moves the next color into 0
                     currentSequence = Arrays.copyOfRange(currentSequence, 1, currentSequence.length);
-                    // Testing
-                    StringBuilder build = new StringBuilder();
-                    for (String item : currentSequence) {
-                        build.append(item).append("\n");
-                    }
-                    sequenceList.setText(build.toString());
                     tiltDirection.clearTilt();
                 } else {
 
-                    setGameOver(); // Set the gameIsOver flag
+                    setGameOver(); // sets game is over
                     Intent gameOver = new Intent(getApplicationContext(), GameOverActivity.class);
                     gameOver.putExtra("Score", totalScore);
                     startActivity(gameOver);
                 }
 
-                // When a user finishes a sequence, it will reset the sequence with a new sequence with 2 additional colors / TODO: might make this into a method in the future
+                // When a user finishes a sequence, it will reset the sequence with a new sequence with 2 additional colors
                 if (currentSequence.length == 0) {
                     // Adds the score
                     totalScore += sequenceNumber;
@@ -180,12 +204,6 @@ public class GameActivity extends AppCompatActivity {
                     sequenceNumber += 2;
                     Log.d("new sequence", String.valueOf(sequenceNumber));
                     currentSequence = sequence.GenerateSequence(sequenceNumber);
-                    // Testing
-                    StringBuilder build = new StringBuilder();
-                    for (String item : currentSequence) {
-                        build.append(item).append("\n");
-                    }
-                    sequenceList.setText(build.toString());
                     tiltDirection.clearTilt();
                     sequenceIndex = 0;
                     flashSequence();
@@ -193,11 +211,10 @@ public class GameActivity extends AppCompatActivity {
             }
         }
     }
+    //used to set the game over to true
     private void setGameOver() {
         gameOver = true;
     }
-
-
 
     //the following methods below are for the tilt direction
     @Override
